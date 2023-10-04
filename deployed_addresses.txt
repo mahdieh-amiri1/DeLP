@@ -1,2 +1,2 @@
 Testnet: Sepolia Ethereum
-Contract Address: _Comming Soon_
+Contract Address: _Comming_Soon_

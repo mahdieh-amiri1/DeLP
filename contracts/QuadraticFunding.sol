@@ -49,10 +49,14 @@ contract QuadraticFunding is Ownable {
     /// @dev Add a project to the tracking system.
     /// @param projectId The ID of the project to be added.
     /// @param contributionAmount The total contribution amount for the project.
-    function addProject(uint256 projectId, uint256 contributionAmount) internal {
+    function addToMatchingProjects(uint256 projectId, uint256 contributionAmount) internal {
         projectOwners[projectId] = msg.sender;
         contributionsAmount[projectId] = contributionAmount;
         totalProjectsCount++;
+    }
+
+    function addToContributions(uint256 projectId) internal {
+        contributionsCount[projectId]++;
     }
 
     /// @dev Update the matching funds for each project.
@@ -102,6 +106,7 @@ contract QuadraticFunding is Ownable {
         require(projectOwners[projectId] == msg.sender, "Only project owner can withdraw");
         require(matchingAmount > 0, "No matching amount");
         projectMatchingFunds[projectId] = 0;
+        contributionsCount[projectId] = 0;
         require(_DeLT.transfer(msg.sender, matchingAmount), "Token transfer failed");
         matchingPool -= matchingAmount;
         pendingWithdraws--;
@@ -123,5 +128,15 @@ contract QuadraticFunding is Ownable {
             z = (x / z + z) / 2;
         }
         return y;
+    }
+
+    /// @dev Function to withdraw funds from the contract's DeLT token balance.
+    /// @param amount The amount of DeLT tokens to withdraw.
+    function withdrawFunds(uint256 amount) external onlyOwner {
+        require(amount <= _DeLT.balanceOf(address(this)), "Insufficient balance");
+        matchingPool -= amount;
+        bool transferSuccess = _DeLT.transfer(owner(), amount);
+        require(transferSuccess, "Token transfer failed");
+        emit FundsWithdrawn(amount, matchingPool);
     }
 }

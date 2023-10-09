@@ -6,16 +6,18 @@ import "./DeLT.sol";
 import"./SoulBoundCertificate.sol";
 import"./QuadraticFunding.sol";
 
+/**
+ * @title CourseManagement
+ * @dev A contract for managing courses, enrollment, and certificates.
+ */
 contract CourseManagement is QuadraticFunding, SoulBoundCertificate {
 
     // Structure to represent a course
     struct Course {
         address creator;                // Address of the course creator
-        // string title;                // Title of the course
-        // string description;          // Description of the course
         string encryptedContentHash;    // IPFS hash of the encrypted course content
         uint256 registrationBaseFee;    // Minimum DeLT tokens required for registration
-        string certificateMetadata;
+        string certificateMetadata;     // Metadata for the course certificate
         bool active;                    // Indicates if the course is active
     }
 
@@ -23,18 +25,15 @@ contract CourseManagement is QuadraticFunding, SoulBoundCertificate {
     mapping(uint256 => Course) public courses;
 
     // Mapping of courses that enrolled by the student address
-    mapping(address => mapping (uint256 => bool)) public enrollments;
+    mapping(address => mapping(uint256 => bool)) public enrollments;
 
     // Mapping of courses that passed by the student address
-    mapping(address => mapping (uint256 => bool)) public studentPassedCourses;
-
-    // Mapping of courses IDs to enrollments count
-    // mapping(uint256 => uint256) public enrollmentsCount;
+    mapping(address => mapping(uint256 => bool)) public studentPassedCourses;
 
     // Counter for generating unique course IDs
     uint256 private courseIdCounter;
 
-    // events
+    // Events
     event CourseAdded(uint256 indexed courseId, address indexed creator);
     event CourseEnrolled(uint256 indexed courseId, address indexed student);
     event CourseDeactivated(uint256 indexed courseId, address indexed owner);
@@ -42,7 +41,7 @@ contract CourseManagement is QuadraticFunding, SoulBoundCertificate {
     event CertificateIssued(uint256 indexed tokenId, address indexed student, uint256 indexed courseId);
     event CoursePassed(uint256 indexed courseId, address indexed student);
  
-    // modifiers
+    // Modifiers
     modifier onlyCourseCreator (uint256 courseId) {
         require(courses[courseId].creator == msg.sender, "Invalid course creator");
         _;
@@ -56,30 +55,37 @@ contract CourseManagement is QuadraticFunding, SoulBoundCertificate {
         // _SBT = SBT(_soulBoundToken);
     }
 
-    // Function to add a new course
+    /**
+     * @dev Function to add a new course.
+     * @param encryptedContentHash IPFS hash of the encrypted course content.
+     * @param registrationBaseFee Minimum DeLT tokens required for registration.
+     * @param certificateMetadata Metadata for course certificates.
+     */
     function addCourse(
-        // string memory title, string memory description,
-        string memory encryptedContentHash, uint256 registrationBaseFee, string memory certificateMetadata, uint256 enrolls) external {
+        string memory encryptedContentHash, 
+        uint256 registrationBaseFee, 
+        string memory certificateMetadata
+    ) external {
         require(registrationBaseFee > 0, "Registration fee must be greater than 0");
         uint256 courseId = courseIdCounter++;
         courses[courseId] = Course({
             creator: msg.sender,
-            // title: title,
-            // description: description,
             encryptedContentHash: encryptedContentHash,
             registrationBaseFee: registrationBaseFee,
             certificateMetadata: certificateMetadata,
             active: true
         });
 
+        // Add this course to projects for quadratic funding
         addToMatchingProjects(courseId, registrationBaseFee);
-
-        // enrollmentsCount[courseId] = enrolls; // Just for test
-        contributionsCount[courseId] = enrolls;
         emit CourseAdded(courseId, msg.sender);
     }
 
-    // Function to enroll in a course by paying the registration fee
+    /**
+     * @dev Function to enroll in a course by paying the registration fee.
+     * @param courseId The ID of the course to enroll in.
+     * @param tokenAmount The amount of DeLT tokens to be used for enrollment.
+     */
     function enrollInCourse(uint256 courseId, uint256 tokenAmount) public {
         require(courseId < courseIdCounter, "Invalid Course ID");
         Course memory course = courses[courseId];
@@ -95,8 +101,8 @@ contract CourseManagement is QuadraticFunding, SoulBoundCertificate {
         bool transferSuccess = _DeLT.transferFrom(msg.sender, course.creator, course.registrationBaseFee);
         require(transferSuccess, "Token transfer failed");
         enrollments[msg.sender][courseId]= true;
-        // enrollmentsCount[courseId]++;
-        contributionsCount[courseId]++;
+        // Add this enrollment to contributions of this course for quadratic funding
+        addToContributions(courseId);
         emit CourseEnrolled(courseId, msg.sender);
     }
 
@@ -116,39 +122,54 @@ contract CourseManagement is QuadraticFunding, SoulBoundCertificate {
         emit CourseActivated(courseId, msg.sender);
     }
 
+    /**
+     * @dev Function to update the encrypted content hash of a course.
+     * @param courseId The ID of the course to update.
+     * @param encryptedContentHash The new IPFS hash of the encrypted course content.
+     */
     function updateCourseContent(uint256 courseId, string memory encryptedContentHash) external onlyCourseCreator(courseId) {
         // Store the IPFS hash of the encrypted course content
         courses[courseId].encryptedContentHash= encryptedContentHash;
     }
 
+    /**
+     * @dev Function to retrieve the encrypted content hash of a course.
+     * @return encryptedContentHash The IPFS hash of the encrypted course content.
+     */
+    // Future implementation: This function will enctypt the symmetric key k by the sender's public key
     function getCourseContent(uint256 courseId) external view returns(string memory) {
         require(enrollments[msg.sender][courseId], "Student not enrolled");
-        // Future implementation: This function will enctypt the symmetric key k by the sender's public key
         return courses[courseId].encryptedContentHash;
     }
 
+    /**
+     * @dev Function to mark a course as passed by a student.
+     * @param courseId The ID of the course to mark as passed.
+     * @param student The address of the student.
+     */
     function updatePassedCourses(uint256 courseId, address student) external onlyCourseCreator(courseId) {
         require(enrollments[student][courseId], "Student not enrolled");
-        // Means that the course creator sings the certificate issuance logically
+        // Indicates that the course creator logically signs the certificate issuance
         studentPassedCourses[student][courseId] = true;
         emit CoursePassed(courseId, student);
     }
 
+    /**
+     * @dev Function for a student to retrieve a certificate for a passed course.
+     * @param courseId The ID of the course for which the certificate is requested.
+     */
     function getCertificate(uint256 courseId) public {
         require(courseId < courseIdCounter, "Invalid Course ID");
         require(studentPassedCourses[msg.sender][courseId], "Course is not passed");        
-        // Means that the student sings the certificate issuance logically
+        // Indicates that the student logically signs the certificate issuance
         issueCertificate(msg.sender, courseId);
     }
 
-    function issueCertificate(uint256 courseId) public onlyCourseCreator(courseId) {
-        uint256 tokenId = uint256(keccak256(abi.encodePacked(msg.sender, courseId, block.timestamp)));
-        string memory metadata = courses[courseId].certificateMetadata;
-        bool mintSuccess = mint(msg.sender, tokenId, metadata);
-        require(mintSuccess, "Token mint failed");
-        emit CertificateIssued(tokenId, msg.sender, courseId);
-    }
-
+    /**
+     * @dev Internal function to issue a certificate for a passed course to a specific student.
+     * @param student The address of the student to issue the certificate to.
+     * @param courseId The ID of the course for which the certificate is issued.
+     */
     function issueCertificate(address student, uint256 courseId) internal {
         // Generate a unique tokenId for the certificate
         uint256 tokenId = uint256(keccak256(abi.encodePacked(student, courseId, block.timestamp)));
@@ -158,6 +179,22 @@ contract CourseManagement is QuadraticFunding, SoulBoundCertificate {
         emit CertificateIssued(tokenId, student, courseId);
     }
 
+    /**
+     * @dev Function to issue a certificate for a passed course that only course creator can call.
+     * @param courseId The ID of the course for which the certificate is issued.
+     */
+    function issueCertificate(uint256 courseId) public onlyCourseCreator(courseId) {
+        uint256 tokenId = uint256(keccak256(abi.encodePacked(msg.sender, courseId, block.timestamp)));
+        string memory metadata = courses[courseId].certificateMetadata;
+        bool mintSuccess = mint(msg.sender, tokenId, metadata);
+        require(mintSuccess, "Token mint failed");
+        emit CertificateIssued(tokenId, msg.sender, courseId);
+    }
+
+    /**
+     * @dev Function to withdraw funds from the contract's DeLT token balance.
+     * @param amount The amount of DeLT tokens to withdraw.
+     */
     function withdrawFunds(uint256 amount) external onlyOwner {
         require(amount <= balanceOf(address(this)), "Insufficient balance");
         matchingPool -= amount;

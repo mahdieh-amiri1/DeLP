@@ -47,12 +47,12 @@ contract CourseManagement is QuadraticFunding, SoulBoundCertificate {
         _;
     }
     
-    constructor(
-    address _delToken
-    // , address _soulBoundToken
-    ) QuadraticFunding(_delToken) {
-        // _DeLT = DeLT(_delToken);
-        // _SBT = SBT(_soulBoundToken);
+    /**
+     * @dev Constructor for the CourseManagement contract.
+     * @param _delToken Address of the DeLT token contract.
+     */
+    constructor(address _delToken) QuadraticFunding(_delToken) {
+        // The constructor initializes the QuadraticFunding contract with the address of the DeLT token contract.
     }
 
     /**

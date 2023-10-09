@@ -33,7 +33,7 @@ DeLP, short for Decentralized Learning Platform, is a blockchain-based platform 
 ## Getting Started
 
 To interact with the DeLP platform, you'll need to deploy these contracts to the Ethereum blockchain. You can use tools like Truffle or Remix for contract deployment and management. Once deployed, users can connect their wallets to enroll in courses, contribute to projects, and earn certificates.
-For detailed deployment and configuration instructions, please refer to the [Deployment Guide](deployment-guide.me) in this repository.
+For detailed deployment and configuration instructions, please refer to the [Deployment Guide](deployment_guide.me) in this repository.
 
 ## Use Cases
 

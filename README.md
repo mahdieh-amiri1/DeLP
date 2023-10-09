@@ -1,58 +1,56 @@
 # delp
-DeLP - Decentralized Learning Platform
+DeLP - Decentralized Learning Platform Contracts
 
-DeLP is a decentralized learning platform built on blockchain technology. It empowers educators, learners, and mentors to participate in a secure and transparent ecosystem for course creation, enrollment, and certification. DeLP combines the benefits of blockchain technology, smart contracts, and decentralized governance to create a trusted environment for learning and skill development.
+Introduction
+DeLP, short for Decentralized Learning Platform, is a blockchain-based platform designed to revolutionize the world of education. By utilizing blockchain technology, DeLP aims to enhance the security, transparency, and accessibility of educational services. These smart contracts serve as the foundation of the DeLP ecosystem, providing essential functionalities for managing courses, issuing certificates, and facilitating quadratic funding for educational projects.
 
-Features
+Contracts Overview
 
-- **Course Creation**: Educators can create and publish courses, including course descriptions, fees, and content.
-- **Course Enrollment**: Learners can enroll in courses by paying the registration fees in DeLT tokens.
-- **Certification**: Upon successful completion of courses, learners receive NFT-based certificates that are signed by mentors.
-- **Decentralized Governance**: DeLP utilizes Quadratic Voting for decentralized decision-making, allowing token holders to vote on platform upgrades and course rankings.
+1. DeLT Token Contract (DeLT.sol):
 
-Demo
+- The DeLT token is the native cryptocurrency of the DeLP platform.
+- It is an ERC20 token compliant with the Ethereum standard.
+- The contract is responsible for creating and managing DeLT tokens, including initial token distribution and burning excess tokens.
+- Total Supply: 1 billion (1e9) DeLT tokens with 18 decimal places.
 
-1. Creating a Course
+2. Quadratic Funding Contract (QuadraticFunding.sol):
 
-To create a course on DeLP, follow these steps:
+- This contract enables users to participate in quadratic funding for educational projects.
+- It calculates matching funds for projects based on contributions from users, promoting community-driven support for education.
+- Key functionalities include adding projects, contributing to projects, and enabling withdrawal of matching funds.
 
-```solidity
-function createCourse(string memory title, string memory description, uint256 registrationFee) external onlyOwner {
-    // Code to create a new course and publish it on the platform
-}
-```
+3. SoulBoundCertificate Contract (SoulBoundCertificate.sol):
 
-2. Enrolling in a Course
+- SoulBoundCertificates represent academic achievements and are issued using this ERC721-compliant contract.
+- These certificates are secured on the blockchain and cannot be transferred or approved for transfer, ensuring their authenticity.
 
-Learners can enroll in a course by transferring DeLT tokens. Here's how:
+4. CourseManagement Contract (CourseManagement.sol):
 
-```solidity
-function enrollInCourse(uint256 courseId) external {
-    // Code to enroll a learner in a course
-}
-```
-
- 3. Certification
-
-Upon course completion, learners receive NFT-based certificates. Certificates are signed by mentors and are user-bound, ensuring authenticity.
-
-4. Quadratic Voting
-
-DeLP uses Quadratic Voting for decentralized governance. Token holders can vote on platform decisions, including course rankings and upgrades.
+- CourseManagement is an extension of the QuadraticFunding and SoulBoundCertificate contracts.
+- It allows educators to create courses, manage enrollments, and issue certificates to students.
+- Quadratic funding is used to incentivize course creation and education-related projects.
 
 Getting Started
 
-To get started with DeLP, you'll need to:
-
-1. Deploy the DeLT token contract to your preferred Ethereum network.
-2. Deploy the DeLP contracts (CourseManagementContract, UserBoundCertificate, QuadraticVoting) to the same network.
-3. Configure your platform, including setting the initial parameters, such as fees and voting coefficients.
-
+To interact with the DeLP platform, you'll need to deploy these contracts to the Ethereum blockchain. You can use tools like Truffle or Remix for contract deployment and management. Once deployed, users can connect their wallets to enroll in courses, contribute to projects, and earn certificates.
 For detailed deployment and configuration instructions, please refer to the [Deployment Guide](deployment-guide.md) in this repository.
+
+Use Cases
+
+- Educational Institutions: DeLP offers a transparent and secure platform for academic institutions to issue certificates and diplomas securely on the blockchain.
+
+- Course Creators: Educators can create and manage courses on the DeLP platform, attracting support through quadratic funding and issuing blockchain-secured certificates.
+
+- Students: Students can enroll in courses, contribute to educational projects, and earn certificates that are verifiable and tamper-proof.
+
+Future Development
+
+The DeLP project is actively developing additional features, such as improved user interfaces, identity verification systems, and integration with other blockchain networks to enhance the educational experience further.
 
 Contributing
 
-We welcome contributions from the community. If you'd like to contribute to DeLP, please follow our [Contribution Guidelines](CONTRIBUTING.md).
+I welcome contributions from the community to help improve the DeLP platform. If you have ideas, bug fixes, or want to get involved, please feel free to submit pull requests or reach out to my social accounts.
+
 
 License
 

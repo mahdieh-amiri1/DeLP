@@ -6,7 +6,7 @@ DeLP, short for Decentralized Learning Platform, is a blockchain-based platform 
 
 Contracts Overview
 
-1. #DeLT Token Contract (DeLT.sol):
+1. DeLT Token Contract (DeLT.sol):
 
 - The DeLT token is the native cryptocurrency of the DeLP platform.
 - It is an ERC20 token compliant with the Ethereum standard.

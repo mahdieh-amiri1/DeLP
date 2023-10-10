@@ -10,7 +10,7 @@ contract QuadraticFunding is Ownable {
 
     uint256 public matchingPool;            // Total amount available for matching
     uint256 public totalProjectsCount;      // Total count of added projects
-    DeLT private _DeLT;                     // Reference to the DeLT token contract
+    DeLT internal _DeLT;                     // Reference to the DeLT token contract
     bool private withdrawalEnabled;         // Flag to enable withdrawal of matching funds
     uint256 private pendingWithdrawals;     // Count of pending withdrawals
     uint256 private withdrawalStartTime;    // Time that matching funds withdrawal gets enabled

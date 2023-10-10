@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 
@@ -16,24 +16,15 @@ contract SoulBoundCertificate is ERC721 {
     // Mapping to store metadata associated with each token
     mapping(uint256 => string) public tokensMetadata;
 
+    // Array to store tokenIds of certificates
+    // uint256[] public certificates;
+    mapping(address => uint256[]) public ownerToCertificates;
+
     /**
      * @dev Constructor for the SoulBoundCertificate contract.
      * It initializes the contract with a name "SBCertificate" and a symbol "SBC".
      */
     constructor() ERC721("SBCertificate", "SBC") {}
-
-    /**
-     * @dev Internal function to mint a Soul Bound Certificate.
-     * @param to The address to which the certificate will be minted.
-     * @param tokenId The ID of the certificate.
-     * @param tokenMetadata The metadata associated with the certificate.
-     * @return success A boolean indicating the success of the minting operation.
-     */
-    function mint(address to, uint256 tokenId, string memory tokenMetadata) internal returns (bool success) {
-        _safeMint(to, tokenId);
-        tokensMetadata[tokenId] = tokenMetadata;
-        success = true;
-    }
 
     /**
      * @dev Function to burn (destroy) a Soul Bound Certificate.
@@ -49,7 +40,7 @@ contract SoulBoundCertificate is ERC721 {
         revert SoulBoundTokenLimitations();
     }
 
-    function safeTransferFrom(address, address, uint256) public pure override {
+    function safeTransferFrom(address, address, uint256, bytes memory) public pure override {
         revert SoulBoundTokenLimitations();
     }
 
@@ -59,5 +50,19 @@ contract SoulBoundCertificate is ERC721 {
 
     function setApprovalForAll(address, bool) public pure override {
         revert SoulBoundTokenLimitations();
+    }
+
+    /**
+     * @dev Internal function to mint a Soul Bound Certificate.
+     * @param to The address to which the certificate will be minted.
+     * @param tokenId The ID of the certificate.
+     * @param tokenMetadata The metadata associated with the certificate.
+     * @return success A boolean indicating the success of the minting operation.
+     */
+    function mint(address to, uint256 tokenId, string memory tokenMetadata) internal returns (bool success) {
+        _safeMint(to, tokenId);
+        tokensMetadata[tokenId] = tokenMetadata;
+        ownerToCertificates[to].push(tokenId);
+        success = true;
     }
 }

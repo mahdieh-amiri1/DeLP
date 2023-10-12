@@ -3,10 +3,10 @@ DeLP - Decentralized Learning Platform Contracts
 
 ### Table of Contents
 - [Introduction](#Introduction)
-- [DeLT Token Contract](#DeLT-Token-Contract)
-- [Quadratic Funding Contract](#Quadratic-Funding-Contract)
-- [Soulbound Certificate Contract](#Soulbound-Certificate-Contract)
-- [Course Management Contract](#Course-Management-Contract)
+- [DeLT Token Contract](##DeLT-Token-Contract)
+- [Quadratic Funding Contract](##Quadratic-Funding-Contract)
+- [Soulbound Certificate Contract](##Soulbound-Certificate-Contract)
+- [Course Management Contract](##Course-Management-Contract)
 
 
 ## Introduction

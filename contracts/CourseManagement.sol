@@ -9,9 +9,8 @@ import "./QuadraticFunding.sol";
  * @dev A contract for managing courses, enrollment, and certificates.
  */
 contract CourseManagement is QuadraticFunding, SoulBoundCertificate {
-    
     // Counter for generating unique course IDs
-    uint256 private courseIdCounter;
+    uint256 private _courseIdCounter;
 
     // Mapping of course IDs to courses
     mapping(uint256 => Course) public courses;
@@ -20,8 +19,8 @@ contract CourseManagement is QuadraticFunding, SoulBoundCertificate {
     // Events
     event CourseAdded(uint256 indexed courseId, address indexed creator);
     event CourseEnrolled(uint256 indexed courseId, address indexed student);
-    event CourseDeactivated(uint256 indexed courseId, address indexed owner);
-    event CourseActivated(uint256 indexed courseId, address indexed owner);
+    event CourseDeactivated(uint256 courseId, address owner);
+    event CourseActivated(uint256 courseId, address owner);
     event CertificateIssued(
         uint256 indexed tokenId,
         address indexed student,
@@ -40,15 +39,20 @@ contract CourseManagement is QuadraticFunding, SoulBoundCertificate {
 
     // Structure to represent a course
     struct Course {
-        address creator;             // Address of the course creator
+        address creator; // Address of the course creator
         string encryptedContentHash; // IPFS hash of the encrypted course content (The course content will not be visible to public)
+        string certificateMetadata; // Metadata for the course certificate
         uint256 registrationBaseFee; // Minimum DeLT tokens required for registration
-        string certificateMetadata;  // Metadata for the course certificate
-        bool active;                 // Indicates if the course is active
+        bool active; // Indicates if the course is active
     }
 
     // An enum to represent the student status related to each course
-    enum Status {NULL, ENROLLED, PASSED, CERTIFIED}
+    enum Status {
+        NULL,
+        ENROLLED,
+        PASSED,
+        CERTIFIED
+    }
 
     /**
      * @dev Constructor for the CourseManagement contract.
@@ -65,15 +69,17 @@ contract CourseManagement is QuadraticFunding, SoulBoundCertificate {
      * @param certificateMetadata Metadata for course certificates.
      */
     function addCourse(
-        string memory encryptedContentHash,
+        string calldata encryptedContentHash,
         uint256 registrationBaseFee,
-        string memory certificateMetadata
+        string calldata certificateMetadata
     ) external {
         require(
             registrationBaseFee > 0,
             "Registration fee must be greater than 0"
         );
-        uint256 courseId = courseIdCounter++;
+        uint256 courseId = _courseIdCounter++;
+    
+        // Create a new course object.
         courses[courseId] = Course({
             creator: msg.sender,
             encryptedContentHash: encryptedContentHash,
@@ -84,6 +90,7 @@ contract CourseManagement is QuadraticFunding, SoulBoundCertificate {
 
         // Add this course to projects for quadratic funding
         addToMatchingProjects(courseId, registrationBaseFee);
+        // Emit the CourseAdded event
         emit CourseAdded(courseId, msg.sender);
     }
 
@@ -93,55 +100,57 @@ contract CourseManagement is QuadraticFunding, SoulBoundCertificate {
      * @param tokenAmount The amount of DeLT tokens to be used for enrollment.
      */
     function enrollInCourse(uint256 courseId, uint256 tokenAmount) external {
-        require(courseId < courseIdCounter, "Invalid Course ID");
-        // require(!enrollments[msg.sender][courseId], "Student is already enrolled");
-        require(studentStatus[msg.sender][courseId] < Status.ENROLLED , "Student is already enrolled");
+        require(courseId < _courseIdCounter, "Invalid Course ID");
+        require(
+            studentStatus[msg.sender][courseId] < Status.ENROLLED,
+            "Student is already enrolled"
+        );
         Course memory course = courses[courseId];
+        uint256 courseFee = course.registrationBaseFee;
         require(course.active, "Course is not active");
         require(
-            tokenAmount >= course.registrationBaseFee,
+            tokenAmount >= courseFee,
             "Insufficient Token Amount"
         );
-        uint256 amountToPool = tokenAmount - course.registrationBaseFee;
+        // The amount of token in input argument can be more than course fee
+        // The course fee amount will be payed as fee to course creator
+        // The remaining token amount will be added to the matching pool as a donation
+        uint256 amountToPool = tokenAmount - courseFee;
 
         if (amountToPool > 0) {
             // Update matching pool
             increaseMatchingPool(amountToPool);
         }
 
-        bool transferSuccess = _DeLT.transferFrom(
+        // Transfer the registration fee to the course creator
+        bool transferSuccess = delToken.transferFrom(
             msg.sender,
             course.creator,
-            course.registrationBaseFee
+            courseFee
         );
         require(transferSuccess, "Token transfer failed");
+            
+        // Update the student's course status
         studentStatus[msg.sender][courseId] = Status.ENROLLED;
-        // enrollments[msg.sender][courseId] = true;
         // Add this enrollment to contributions of this course for quadratic funding
-        addToContributions(courseId);        
+        addToContributions(courseId);
+        // Emit the enrollment event
         emit CourseEnrolled(courseId, msg.sender);
     }
 
-    // Function to deactivate a course
-    function deactivateCourse(uint256 courseId)
+    // Function to toggle the active status of a course
+    function toggleCourseStatus(uint256 courseId)
         external
         onlyCourseCreator(courseId)
     {
         Course storage course = courses[courseId];
-        require(course.active, "Course is not active");
-        course.active = false;
-        emit CourseDeactivated(courseId, msg.sender);
-    }
-
-    // Function to activate a course
-    function activateCourse(uint256 courseId)
-        external
-        onlyCourseCreator(courseId)
-    {
-        Course storage course = courses[courseId];
-        require(!course.active, "Course is already active");
-        course.active = true;
-        emit CourseActivated(courseId, msg.sender);
+        if (course.active) {
+            course.active = false;
+            emit CourseDeactivated(courseId, msg.sender);
+        } else {
+            course.active = true;
+            emit CourseActivated(courseId, msg.sender);
+        }
     }
 
     /**
@@ -149,22 +158,25 @@ contract CourseManagement is QuadraticFunding, SoulBoundCertificate {
      * @param courseId The ID of the course to update.
      * @param encryptedContentHash The new IPFS hash of the encrypted course content.
      */
-    function updateCourseContent(
-        uint256 courseId,
-        string memory encryptedContentHash
-    ) external onlyCourseCreator(courseId) {
+    function updateCourseContent(uint256 courseId, string calldata encryptedContentHash)
+        external
+        onlyCourseCreator(courseId)
+    {
         // Store the IPFS hash of the encrypted course content
         courses[courseId].encryptedContentHash = encryptedContentHash;
     }
 
-    // Future implementation: 
+    // Future implementation:
     // Combining symmetric and asymmetric cryptographys!
     // This function will encrypt the secret key of symmetric encryption (k) by the sender's public key
     // Then will stored in the ipfs
     // The the sender will get able to decrypt the course content hash (stored in ipfs also)
     // Symmetric encryption (AES) will be handled off-chain because of k security
     function getCourseContentAccess(uint256 courseId) external view {
-        require(studentStatus[msg.sender][courseId] > Status.NULL, "Invalid access");
+        require(
+            studentStatus[msg.sender][courseId] > Status.NULL,
+            "Invalid access"
+        );
         require(courses[courseId].active, "Course is not active");
         // Rest of the code
     }
@@ -178,11 +190,11 @@ contract CourseManagement is QuadraticFunding, SoulBoundCertificate {
         external
         onlyCourseCreator(courseId)
     {
-        // require(enrollments[student][courseId], "Student not enrolled");
-        require(studentStatus[student][courseId] == Status.ENROLLED , "Student status must be enrolled");
-
+        require(
+            studentStatus[student][courseId] == Status.ENROLLED,
+            "Student status must be enrolled"
+        );
         // Indicates that the course creator logically signs the certificate issuance
-        // studentPassedCourses[student][courseId] = true;
         studentStatus[student][courseId] = Status.PASSED;
         emit CoursePassed(courseId, student);
     }
@@ -193,15 +205,12 @@ contract CourseManagement is QuadraticFunding, SoulBoundCertificate {
      */
     // Indicates that the student logically signs the certificate issuance
     function getCertificate(uint256 courseId) external {
-        require(courseId < courseIdCounter, "Invalid Course ID");
-        // require(!gotCertified[msg.sender][courseId], "Student is already certified");
-        // require(
-        //     studentPassedCourses[msg.sender][courseId],
-        //     "Course is not passed"
-        // );
-        require(studentStatus[msg.sender][courseId] == Status.PASSED, "Student status must be passed");
-        
-        // Issue certificate:
+        require(courseId < _courseIdCounter, "Invalid Course ID");
+        require(
+            studentStatus[msg.sender][courseId] == Status.PASSED,
+            "Student status must be passed"
+        );
+        // Issue certificate
         uint256 tokenId = uint256(
             keccak256(abi.encodePacked(msg.sender, courseId, block.timestamp))
         );
@@ -221,21 +230,21 @@ contract CourseManagement is QuadraticFunding, SoulBoundCertificate {
         external
         onlyCourseCreator(courseId)
     {
-        // require(
-        //     studentPassedCourses[student][courseId],
-        //     "Course is not passed"
-        // );
-        // require(!gotCertified[student][courseId], "Student is already certified");
-        require(studentStatus[student][courseId] == Status.PASSED, "Student status must be passed");
-
+        require(
+            studentStatus[student][courseId] == Status.PASSED,
+            "Student status must be passed"
+        );
         uint256 tokenId = uint256(
             keccak256(abi.encodePacked(student, courseId, block.timestamp))
         );
         string memory metadata = courses[courseId].certificateMetadata;
         bool mintSuccess = mint(student, tokenId, metadata);
         require(mintSuccess, "Token mint failed");
-        // gotCertified[msg.sender][courseId] == true;
         studentStatus[student][courseId] = Status.CERTIFIED;
         emit CertificateIssued(tokenId, student, courseId);
+    }
+
+    function getCoursesCount() public view returns (uint256) {
+        return _courseIdCounter;
     }
 }

@@ -17,17 +17,20 @@ Before you begin, make sure you have the following prerequisites installed on yo
 
    ```bash
    git clone https://github.com/yourusername/DeLP.git
+   ```
 
 2. Navigate to the project directory:
 
   ```bash
   cd DeLP
+```
 
 
 3. Install project dependencies:
 
   ```bash
   yarn install
+  ```
 
 ## Usage
 ### Local Development
@@ -37,16 +40,19 @@ To deploy and test the DeLP smart contracts on your local Ethereum environment:
 
   ```bash
   yarn hardhat run ./scripts/deploy.js
+  ```
 
 2. Interact code using hardhat console:
 
   ```bash
   yarn hardhat console
+  ```
 
 3. Run tests:
 
   ```bash
   yarn hardhat test
+  ```
 
 ### Deployment to a Testnet
 To deploy the DeLP smart contracts to a public testnet:
@@ -60,4 +66,5 @@ To deploy the DeLP smart contracts to a public testnet:
 
   ```bash
   yarn hardhat run ./scripts/deploy.js --network sepolia
+  ```
 

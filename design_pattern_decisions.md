@@ -1,39 +1,33 @@
+# Design Pattern Decisions
 In the development of DeLP (Decentralized Learning Platform), we made several design pattern decisions to ensure the security, scalability, and efficiency of the platform. Below are some of the key design patterns we adopted:
 
-Smart Contract Structure
+***
+## 1. Role-Based Access Control
+Usage: Role-Based Access Control is used throughout our smart contracts.
 
-Modularization
+Description: We implement a role-based access control system to manage permissions and access to various functions within our contracts. This design pattern restricts certain functionalities to specific roles, such as owner and course creators. It ensures that only authorized users can perform certain actions, enhancing security and access control.
 
-We adopted a modular approach to smart contract development. Each major component of the platform, such as course management, certification, and quadratic voting, is implemented in separate smart contracts. This modularization enhances code readability, reusability, and maintainability.
+***
+## 2. Use ofExternal Libraries and Contracts 
+In the development of the DeLP (Decentralized Learning Platform) project, we have made use of external libraries and smart contracts to enhance the functionality and security of our platform. These external components have been carefully selected to leverage established solutions, save development time, and ensure the reliability of our smart contracts.
 
-Ownable Contracts
+### OpenZeppelin Contracts
+One of the key libraries we have integrated into our project is the OpenZeppelin Contracts library. OpenZeppelin Contracts provide a collection of battle-tested smart contracts that follow best practices and security standards. In particular, we have utilized OpenZeppelin's implementation of the [ERC20](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC20/ERC20.sol) token standard to create the DeLT token, our platform's native cryptocurrency, [ERC71](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC721/ERC721.sol) token standard to create soulbount certificates, and [Owable](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/access/Ownable.sol) access control library. 
 
-We use the Ownable pattern from the OpenZeppelin library for contracts that require access control. This pattern ensures that only the contract owner has administrative rights, enhancing security.
+By using OpenZeppelin Contracts, we benefit from:
 
-Token Standards
+Security: OpenZeppelin Contracts are thoroughly reviewed and audited, making them a trusted choice for implementing token functionality.
+Efficiency: These contracts are optimized for gas usage and performance, ensuring a seamless experience for users.
+Maintenance: OpenZeppelin actively maintains and updates its contracts to address security vulnerabilities and adapt to evolving best practices.
 
-ERC-20 Token
+***
+## 3. Withdrawal Pattern
+Usage: The Withdrawal Pattern is employed in interactions with external contracts, such as transferring funds.
 
-For the platform's native token, DeLT, we chose the ERC-20 standard. ERC-20 is widely recognized, well-tested, and compatible with various wallets and exchanges. It provides flexibility for token management.
+Description: To mitigate reentrancy vulnerabilities, we use the Withdrawal Pattern. This approach involves performing state changes after transferring funds to external contracts. By following this pattern, we minimize the risk of reentrancy attacks and ensure secure interactions with external contracts.
 
-Security Measures
+***
+## 4. Immutable Contracts
+Usage: Our smart contracts are designed to be immutable.
 
-SafeMath Library
-
-While the newer versions of Solidity include safe arithmetic operations, we have incorporated the SafeMath library to prevent integer overflow and underflow issues in arithmetic calculations, ensuring the security of our contracts.
-
-Decentralized Governance
-
-Quadratic Voting
-
-To facilitate decentralized decision-making, we implemented Quadratic Voting. This voting mechanism allows token holders to vote on platform upgrades and course rankings proportionally to their token holdings, promoting a fair and transparent governance system.
-
-Data Storage and Optimization
-
-Minimized Storage Reads
-
-We minimize storage reads by directly accessing the required data within functions, reducing gas costs. This optimization keeps our contracts gas-efficient without compromising security.
-
-Continuous Improvement
-
-The design pattern decisions we've made are not static. We continuously assess and improve our design patterns as the platform evolves, incorporating best practices and optimizations to ensure a secure and efficient learning environment for all participants.
+Description: We have chosen to make our contracts immutable, meaning that their code and functionality cannot be altered or upgraded after deployment. While contract upgradability can be advantageous, it also introduces potential security risks. By maintaining immutability, we prevent unintended changes to contract behavior, enhancing the security and predictability of our smart contracts.

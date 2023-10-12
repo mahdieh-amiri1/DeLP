@@ -1,0 +1,45 @@
+{
+  "name": "delp",
+  "version": "1.0.0",
+  "description": "delp hardhat project",
+  "main": "index.js",
+  "license": "MIT",
+  "repository": "https://github.com/mahdieh-amiri1/delp.git",
+  "author": "mahdieh",
+  "devDependencies": {
+    "@nomicfoundation/hardhat-chai-matchers": "^2.0.0",
+    "@nomicfoundation/hardhat-ethers": "^3.0.0",
+    "@nomicfoundation/hardhat-network-helpers": "^1.0.0",
+    "@nomicfoundation/hardhat-toolbox": "3.0.0",
+    "@nomicfoundation/hardhat-verify": "^1.0.0",
+    "@nomiclabs/hardhat-etherscan": "^3.1.7",
+    "@nomiclabs/hardhat-waffle": "^2.0.6",
+    "@openzeppelin/contracts": "^4.0.0",
+    "@typechain/ethers-v6": "^0.4.0",
+    "@typechain/hardhat": "^8.0.0",
+    "@types/chai": "^4.2.0",
+    "@types/mocha": "^9.1.0",
+    "chai": "^4.2.0",
+    "dotenv": "^16.3.1",
+    "hardhat": "^2.17.1",
+    "hardhat-deploy": "^0.9.29",
+    "hardhat-gas-reporter": "^1.0.8",
+    "solidity-coverage": "^0.8.1",
+    "ts-node": "^8.0.0",
+    "typechain": "^8.2.0",
+    "typescript": "^4.5.0"
+  },
+  "scripts": {
+    "test": "hardhat test",
+    "test:staging": "hardhat test --network sepolia",
+    "lint": "solhint 'contracts/**/*.sol'",
+    "lint:fix": "solhint 'contracts/**/*.sol' --fix",
+    "format": "prettier --write .",
+    "coverage": "hardhat coverage"
+  },
+  "dependencies": {
+    "@foundation/hardhat-ethers": "npm:hardhat-deploy-ethers",
+    "@nomiclabs/hardhat-waffle": "^2.0.6",
+    "ethers": "^6.8.0"
+  }
+}

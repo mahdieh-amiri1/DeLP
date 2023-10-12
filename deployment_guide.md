@@ -6,7 +6,7 @@ These instructions will guide you through setting up and running the DeLP projec
 
 Before you begin, make sure you have the following prerequisites installed on your machine:
 
-- [Node.js](https://nodejs.org/) (v14.17.6 or later)
+- [Node.js](https://nodejs.org/)
 - [Yarn](https://yarnpkg.com/)
 - [Git](https://git-scm.com/)
 - [Hardhat](https://hardhat.org/)

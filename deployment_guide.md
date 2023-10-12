@@ -16,14 +16,14 @@ Before you begin, make sure you have the following prerequisites installed on yo
 1. Clone this repository:
 
    ```bash
-   git clone https://github.com/yourusername/DeLP.git
+   git clone [https://github.com/yourusername/DeLP.git](https://github.com/mahdieh-amiri1/delp.git)
    ```
 
 2. Navigate to the project directory:
 
   ```bash
   cd DeLP
-```
+   ```
 
 
 3. Install project dependencies:

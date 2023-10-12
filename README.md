@@ -8,15 +8,15 @@ DeLP, short for Decentralized Learning Platform, is a blockchain-based platform 
 ***
 ## Contracts Overview
 
-### 1. DeLT Token Contract (DeLT.sol):
+### 1. DeLT Token Contract:
 
 - The DeLT token is the native cryptocurrency of the DeLP platform.
-- It is an ERC20 token compliant with the Ethereum standard.
+- `DeLT.sol` is an ERC20 token compliant with the Ethereum standard.
 - The contract is responsible for creating and managing DeLT tokens, including initial token distribution and burning excess tokens.
 - *Total Supply*: 1 billion (1e9) DeLT tokens with 18 decimal places.
 
 ***
-### 2. Quadratic Funding Contract (QuadraticFunding.sol):
+### 2. Quadratic Funding Contract:
 
 #### Introduction to Quadratic Funding
 
@@ -51,7 +51,7 @@ The function calculates the portions (shares) for each project. It iterates thro
 The function is responsible for updating the matching funds for each project. It retrieves the total fund available for matching and the portions calculated using calculatePortions(). Then, it assigns matching funds to each project based on their computed portions. Projects with non-zero portions receive matching funds, and the number of projects with pending withdrawals is updated.
 
 ***
-### 3. SoulBoundCertificate Contract (SoulBoundCertificate.sol):
+### 3. SoulBoundCertificate Contract:
 
 #### Introduction to Soulbound Tokens
 
@@ -72,7 +72,7 @@ The contract overrides certain functions from the ERC721 standard, including `tr
 This is a custom error that is raised if anyone attempts to transfer or approve to transfer a Soul Bound Certificate. This error enforces the non-transferable nature of these certificates.
 
 ***
-### 4. CourseManagement Contract (CourseManagement.sol):
+### 4. CourseManagement Contract:
 
 - `CourseManagement.sol` facilitates the creation and management of courses, student enrollment, and the issuance of certificates. It inherits the QuadraticFunding and SoulBoundCertificate contracts to access its needed functionalities.
 - Quadratic funding is used to incentivize course creation and education-related projects. Each created course is added to the projects that can get funds from matching pool using quadratic funding mechanism.

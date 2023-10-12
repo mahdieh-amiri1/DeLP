@@ -88,9 +88,9 @@ This is a custom error that is raised if anyone attempts to transfer or approve 
 ***
 ## Getting Started
 
-To interact with the DeLP platform, you'll need to deploy these contracts to the Ethereum blockchain. You can use tools like Truffle or Remix for contract deployment and management. Once deployed, users can connect their wallets to enroll in courses, contribute to projects, and earn certificates.
 For detailed deployment and configuration instructions, please refer to the [Deployment Guide](deployment_guide.me) in this repository.
 
+***
 ## Use Cases
 
 - Educational Institutions: DeLP offers a transparent and secure platform for academic institutions to issue certificates and diplomas securely on the blockchain.
@@ -99,15 +99,17 @@ For detailed deployment and configuration instructions, please refer to the [Dep
 
 - Students: Students can enroll in courses, contribute to educational projects, and earn certificates that are verifiable and tamper-proof.
 
+***
 ## Future Development
 
 The DeLP project is actively developing additional features, such as improved user interfaces, identity verification systems, and integration with other blockchain networks to enhance the educational experience further.
 
+***
 ## Contributing
 
 I welcome contributions from the community to help improve the DeLP platform. If you have ideas, bug fixes, or want to get involved, please feel free to submit pull requests or reach out to my social accounts.
 
-
+***
 ## License
 
 This project is licensed under the MIT License.

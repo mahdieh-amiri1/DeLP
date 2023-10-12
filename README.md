@@ -1,6 +1,14 @@
 # DeLP
 DeLP - Decentralized Learning Platform Contracts
 
+### Table of Contents
+- [Introduction](#Introduction)
+- [DeLT Token Contract](#DeLT-Token-Contract)
+- [Quadratic Funding Contract](#Quadratic-Funding-Contract)
+- [Soulbound Certificate Contract](#Soulbound-Certificate-Contract)
+- [Course Management Contract](#Course-Management-Contract)
+
+
 ## Introduction
 DeLP, short for Decentralized Learning Platform, is a blockchain-based platform designed to revolutionize the world of education. By utilizing blockchain technology, DeLP aims to enhance the security, transparency, and accessibility of educational services. These smart contracts serve as the foundation of the DeLP ecosystem, providing essential functionalities for managing courses, issuing certificates, and facilitating quadratic funding for educational projects.
 
@@ -51,7 +59,7 @@ The function calculates the portions (shares) for each project. It iterates thro
 The function is responsible for updating the matching funds for each project. It retrieves the total fund available for matching and the portions calculated using calculatePortions(). Then, it assigns matching funds to each project based on their computed portions. Projects with non-zero portions receive matching funds, and the number of projects with pending withdrawals is updated.
 
 ***
-### 3. SoulBoundCertificate Contract:
+### 3. Soulbound Certificate Contract:
 
 #### Introduction to Soulbound Tokens
 
@@ -72,7 +80,7 @@ The contract overrides certain functions from the ERC721 standard, including `tr
 This is a custom error that is raised if anyone attempts to transfer or approve to transfer a Soul Bound Certificate. This error enforces the non-transferable nature of these certificates.
 
 ***
-### 4. CourseManagement Contract:
+### 4. Course Management Contract:
 
 - `CourseManagement.sol` facilitates the creation and management of courses, student enrollment, and the issuance of certificates. It inherits the QuadraticFunding and SoulBoundCertificate contracts to access its needed functionalities.
 - Quadratic funding is used to incentivize course creation and education-related projects. Each created course is added to the projects that can get funds from matching pool using quadratic funding mechanism.

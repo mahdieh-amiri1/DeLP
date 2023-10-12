@@ -1,35 +1,73 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 
-/// @title DeLT Token Contract
-/// @dev This contract represents the DeLT (DelToken) ERC20 token.
-contract DeLT is ERC20, Ownable {
-    uint256 public maxSupply;
-    /// @dev Constructor to initialize the token with a name and symbol.
-    constructor() ERC20("DelToken", "DeLT") {
-        // Mint initial tokens to the contract creator.
-        // Total Supply = 1 billion (1e9) and decimals = 18
-        uint256 totalSupply = 1e9 * 1e18;
-        maxSupply = totalSupply;
-        uint256 initialSupply = totalSupply / 10; // 10% initial supply
-        _mint(msg.sender, initialSupply);
+/**
+ * @title SoulBoundCertificate
+ * @dev A contract for issuing Soul Bound Certificates using the ERC721 standard.
+ * Soul Bound Certificates cannot be transferred or approved for transfer.
+ */
+contract SoulBoundCertificate is ERC721 {
+
+    // Error message for attempting to transfer a Soul Bound Certificate
+    error SoulBoundTokenLimitations();
+
+    // Mapping to store metadata associated with each token
+    mapping(uint256 => string) public tokensMetadata;
+
+    // Array to store tokenIds of certificates
+    // uint256[] public certificates;
+    mapping(address => uint256[]) private _addressToCertificates;
+
+    /**
+     * @dev Constructor for the SoulBoundCertificate contract.
+     * It initializes the contract with a name "SBCertificate" and a symbol "SBC".
+     */
+    constructor() ERC721("SBCertificate", "SBC") {}
+
+    /**
+     * @dev Function to burn (destroy) a Soul Bound Certificate.
+     * @param tokenId The ID of the certificate to be burned.
+     */
+    function burn(uint256 tokenId) external {
+        require(ownerOf(tokenId) == msg.sender, "Invalid owner");
+        super._burn(tokenId);
     }
 
-    /// @dev Function to mint additional tokens (only callable by the owner).
-    /// @param to The address to which the tokens will be minted.
-    /// @param amount The amount of tokens to mint.
-    function mint(address to, uint256 amount) external onlyOwner {
-        uint256 totalSupply;
-        require(totalSupply + amount <= totalSupply, "Exceeds max supply limit");
-        _mint(to, amount);
+    function getAddressToCertificates(address certificateOwner) public view returns(uint256[] memory) {
+        return _addressToCertificates[certificateOwner];
     }
 
-    /// @dev Function to burn tokens (only callable by the owner).
-    /// @param amount The amount of tokens to burn.
-    function burn(uint256 amount) external onlyOwner {
-        _burn(msg.sender, amount);
+
+    // Overrides for ERC721 transfer and approval functions with custom error
+    function transferFrom(address, address, uint256) public pure override {
+        revert SoulBoundTokenLimitations();
+    }
+
+    function safeTransferFrom(address, address, uint256, bytes memory) public pure override {
+        revert SoulBoundTokenLimitations();
+    }
+
+    function approve(address, uint256) public pure override {
+        revert SoulBoundTokenLimitations();
+    }
+
+    function setApprovalForAll(address, bool) public pure override {
+        revert SoulBoundTokenLimitations();
+    }
+
+    /**
+     * @dev Internal function to mint a Soul Bound Certificate.
+     * @param to The address to which the certificate will be minted.
+     * @param tokenId The ID of the certificate.
+     * @param tokenMetadata The metadata associated with the certificate.
+     * @return success A boolean indicating the success of the minting operation.
+     */
+    function mint(address to, uint256 tokenId, string memory tokenMetadata) internal returns (bool success) {
+        _safeMint(to, tokenId);
+        tokensMetadata[tokenId] = tokenMetadata;
+        _addressToCertificates[to].push(tokenId);
+        success = true;
     }
 }

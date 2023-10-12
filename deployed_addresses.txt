@@ -1,2 +1,3 @@
-Testnet: Sepolia Ethereum
-Contract Address: _Comming_Soon_
+Sepolia Testnet Ethereum
+DeLT (ERC20 Token) Contract Address: 0xA9b6f17Ad0e27e463c0D0732C1daFAe35A52e8eB
+CourseManagement Contract Address: 0x5085EF77A1452f6F8a0cFC53026Fb232cCbD2c30

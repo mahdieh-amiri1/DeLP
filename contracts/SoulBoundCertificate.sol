@@ -18,7 +18,7 @@ contract SoulBoundCertificate is ERC721 {
 
     // Array to store tokenIds of certificates
     // uint256[] public certificates;
-    mapping(address => uint256[]) public ownerToCertificates;
+    mapping(address => uint256[]) private _addressToCertificates;
 
     /**
      * @dev Constructor for the SoulBoundCertificate contract.
@@ -34,6 +34,11 @@ contract SoulBoundCertificate is ERC721 {
         require(ownerOf(tokenId) == msg.sender, "Invalid owner");
         super._burn(tokenId);
     }
+
+    function getAddressToCertificates(address certificateOwner) public view returns(uint256[] memory) {
+        return _addressToCertificates[certificateOwner];
+    }
+
 
     // Overrides for ERC721 transfer and approval functions with custom error
     function transferFrom(address, address, uint256) public pure override {
@@ -62,7 +67,7 @@ contract SoulBoundCertificate is ERC721 {
     function mint(address to, uint256 tokenId, string memory tokenMetadata) internal returns (bool success) {
         _safeMint(to, tokenId);
         tokensMetadata[tokenId] = tokenMetadata;
-        ownerToCertificates[to].push(tokenId);
+        _addressToCertificates[to].push(tokenId);
         success = true;
     }
 }

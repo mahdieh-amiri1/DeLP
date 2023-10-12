@@ -1,4 +1,4 @@
-# Avoiding Common Smart Contract Attacks
+# Avoiding Common Attacks
 
 DeLP (Decentralized Learning Platform) is committed to ensuring the security and reliability of its smart contracts. To achieve this, the platform incorporates various security measures to mitigate common vulnerabilities and attacks. This document outlines some of the security considerations and measures implemented in DeLP contracts.
 

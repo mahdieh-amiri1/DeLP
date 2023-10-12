@@ -1,4 +1,4 @@
-# delp
+# DeLP
 DeLP - Decentralized Learning Platform Contracts
 
 ## Introduction

@@ -34,9 +34,13 @@ ContributionsAmount is a constant value associated with the project.
 The formula computes the portion of matching funds by taking the square of the sum of the square roots of each contribution. This approach encourages a more equitable distribution of funds among projects that have received various levels of support.
 
 ##### Key Functions
-- calculatePortions()
+
+- `calculatePortions()`
+
 The function calculates the portions (shares) for each project. It iterates through the list of projects, computes the portion for each project based on their contributions, and accumulates the total denominator value. The result is an array of portions representing each project's share of matching funds.
-- updateMatchingFunds()
+
+- `updateMatchingFunds()`
+
 The function is responsible for updating the matching funds for each project. It retrieves the total fund available for matching and the portions calculated using calculatePortions(). Then, it assigns matching funds to each project based on their computed portions. Projects with non-zero portions receive matching funds, and the number of projects with pending withdrawals is updated.
 
 ### 3. SoulBoundCertificate Contract (SoulBoundCertificate.sol):

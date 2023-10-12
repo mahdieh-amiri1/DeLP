@@ -2,13 +2,12 @@
 DeLP - Decentralized Learning Platform Contracts
 
 ### Table of Contents
-- [Introduction](#Introduction)
-- [DeLT Token Contract](#DeLT-Token-Contract)
-- [Quadratic Funding Contract](#Quadratic-Funding-Contract)
-- [Soulbound Certificate Contract](#Soulbound-Certificate-Contract)
-- [Course Management Contract](#Course-Management-Contract)
-
-
+- [Introduction](#introduction)
+- [DeLT Token Contract](#1-delt-token-contract)
+- [Quadratic Funding Contract](#2-quadratic-funding-contract)
+- [Soulbound Certificate Contract](#3-soulbound-certificate-contract)
+- [Course Management Contract](#4-course-management-contract)
+***
 ## Introduction
 DeLP, short for Decentralized Learning Platform, is a blockchain-based platform designed to revolutionize the world of education. By utilizing blockchain technology, DeLP aims to enhance the security, transparency, and accessibility of educational services. These smart contracts serve as the foundation of the DeLP ecosystem, providing essential functionalities for managing courses, issuing certificates, and facilitating quadratic funding for educational projects.
 

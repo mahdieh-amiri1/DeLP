@@ -1,5 +1,5 @@
 # DeLP
-DeLP - Decentralized Learning Platform Contracts
+DeLP - Decentralized Learning Platform
 
 ### Table of Contents
 - [Introduction](#introduction)

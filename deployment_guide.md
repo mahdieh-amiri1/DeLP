@@ -39,7 +39,7 @@ To deploy and test the DeLP smart contracts on your local Ethereum environment:
 1. Deploy the smart contracts:
 
   ```bash
-  yarn hardhat run ./scripts/deploy.js
+  yarn hardhat deploy
   ```
 
 2. Interact code using hardhat console:
@@ -65,6 +65,6 @@ To deploy the DeLP smart contracts to a public testnet:
 (Make sure you have testnet Ether to pay for gas fees.)
 
   ```bash
-  yarn hardhat run ./scripts/deploy.js --network sepolia
+  yarn hardhat deploy --network sepolia
   ```
 

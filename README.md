@@ -88,7 +88,7 @@ This is a custom error that is raised if anyone attempts to transfer or approve 
 ***
 ## Getting Started
 
-For detailed deployment and configuration instructions, please refer to the [Deployment Guide](deployment_guide.me) in this repository.
+For detailed deployment and configuration instructions, please refer to the [Deployment Guide](deployment_guide.md) in this repository.
 
 ***
 ## Use Cases

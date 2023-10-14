@@ -68,3 +68,10 @@ To deploy the DeLP smart contracts to a public testnet:
   yarn hardhat deploy --network sepolia
   ```
 
+## Front-End
+[Front-end repository](https://github.com/mahdieh-amiri1/delp-front)
+
+```bash
+git clone https://github.com/mahdieh-amiri1/delp-front.git
+```
+Set up `constants.js` and `delt_constants.js` by replacing your deployed contract addresses

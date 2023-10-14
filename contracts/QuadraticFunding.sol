@@ -25,8 +25,8 @@ contract QuadraticFunding is Ownable {
         address indexed creator
     );
     event MatchingPoolIncreased(
-        uint256 indexed addedAmount,
-        uint256 indexed currentAmount
+        address indexed funderAddress,
+        uint256 indexed addedAmount
     );
 
     // Structure to represent a project
@@ -78,7 +78,7 @@ contract QuadraticFunding is Ownable {
         require(transferSuccess, "Token transfer failed");
        
         matchingPool += amountToPool;
-        emit MatchingPoolIncreased(amountToPool, matchingPool);
+        emit MatchingPoolIncreased(msg.sender ,amountToPool);
     }
 
     // Based on the quadratic funding:

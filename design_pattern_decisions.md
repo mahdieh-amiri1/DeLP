@@ -8,7 +8,7 @@ Usage: Role-Based Access Control is used throughout our smart contracts.
 Description: We implement a role-based access control system to manage permissions and access to various functions within our contracts. This design pattern restricts certain functionalities to specific roles, such as owner and course creators. It ensures that only authorized users can perform certain actions, enhancing security and access control.
 
 ***
-## 2. Use ofExternal Libraries and Contracts 
+## 2. Using External Libraries and Contracts 
 In the development of the DeLP (Decentralized Learning Platform) project, we have made use of external libraries and smart contracts to enhance the functionality and security of our platform. These external components have been carefully selected to leverage established solutions, save development time, and ensure the reliability of our smart contracts.
 
 ### OpenZeppelin Contracts

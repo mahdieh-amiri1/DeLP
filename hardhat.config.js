@@ -1,25 +1,29 @@
 require("@nomicfoundation/hardhat-toolbox");
 require("hardhat-deploy");
 require("@nomicfoundation/hardhat-ethers")
+require("@nomicfoundation/hardhat-verify")
 require("dotenv").config()
 require("hardhat-gas-reporter")
 require("solidity-coverage")
 // require("@nomiclabs/hardhat-etherscan")
-// require("@nomiclabs/hardhat-waffle")
+
+// require("@nomiclabs/hardshat-waffle")
+// const { task } = require("hardhat/config")
+
 
 /** @type import('hardhat/config').HardhatUserConfig */
 
-const SEPOLIA_RPC_URL = 
-    process.env.SEPOLIA_RPC_URL
-    ||
-    "https://eth.getblock.io/5f884767-a8f9-4be0-a074-209b11e0215b/sepolia/"
+const SEPOLIA_RPC_URL =
+  process.env.SEPOLIA_RPC_URL
+  ||
+  "https://eth.getblock.io/5f884767-a8f9-4be0-a074-209b11e0215b/sepolia/"
 
-    const PRIVATE_KEY =
-    process.env.PRIVATE_KEY ||
-    "0x11ee3108a03081fe260ecdc106554d09d9d1209bcafd46942b10e02943effc4a"
-    
-    const ETHERSCAN_API_KEY = process.env.ETHERSCAN_API_KEY || ""
-    const COINMARKETCAP_API_KEY = process.env.COINMARKETCAP_API_KEY || ""
+const PRIVATE_KEY =
+  process.env.PRIVATE_KEY ||
+  ""
+
+const ETHERSCAN_API_KEY = process.env.ETHERSCAN_API_KEY || ""
+const COINMARKETCAP_API_KEY = process.env.COINMARKETCAP_API_KEY || ""
 
 module.exports = {
   networks: {
@@ -42,17 +46,24 @@ module.exports = {
     },
   },
 
-  solidity: "0.8.20",
+  solidity: {
+    version: "0.8.20",
+    setting: {
+      optimizer: {
+        enabled: true
+      }
+    }
+},
 
   namedAccounts: {
     deployer: {
       default: 0 // first account is default choice to become deployer
     },
 
-    etherscan: {
-      apiKey: ETHERSCAN_API_KEY,
-      // customChains: [], // uncomment this line if you are getting a TypeError: customChains is not iterable
-    },
+    // etherscan: {
+    //   apiKey: ETHERSCAN_API_KEY,
+    //   // customChains: [], // uncomment this line if you are getting a TypeError: customChains is not iterable
+    // },
 
     gasReporter: {
       enabled: true,

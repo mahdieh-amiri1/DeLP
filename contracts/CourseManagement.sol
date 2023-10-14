@@ -69,9 +69,9 @@ contract CourseManagement is QuadraticFunding, SoulBoundCertificate {
      * @param certificateMetadata Metadata for course certificates.
      */
     function addCourse(
-        string calldata encryptedContentHash,
+        string memory encryptedContentHash,
         uint256 registrationBaseFee,
-        string calldata certificateMetadata
+        string memory certificateMetadata
     ) external {
         require(
             registrationBaseFee > 0,
@@ -158,7 +158,7 @@ contract CourseManagement is QuadraticFunding, SoulBoundCertificate {
      * @param courseId The ID of the course to update.
      * @param encryptedContentHash The new IPFS hash of the encrypted course content.
      */
-    function updateCourseContent(uint256 courseId, string calldata encryptedContentHash)
+    function updateCourseContent(uint256 courseId, string memory encryptedContentHash)
         external
         onlyCourseCreator(courseId)
     {

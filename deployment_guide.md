@@ -86,4 +86,5 @@ To deploy the DeLP smart contracts to a public testnet:
 ```bash
 git clone https://github.com/mahdieh-amiri1/delp-front.git
 ```
-Set up `constants.js` and `delt_constants.js` by replacing your deployed contract addresses
+Set up `constants.js` and `delt_constants.js` by replacing your deployed contract addresses.
+You can install `Live Server` extension if you are using VSCode to run the `main.html` in browser.

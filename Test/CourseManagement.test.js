@@ -141,3 +141,83 @@ describe("CourseManagement Contract", function () {
     }
 
 });
+
+
+describe("Quadratic Funding Contract", function () {
+    let amountToPool = ethers.parseEther("1000")
+    const courseFee1 = ethers.parseEther("10")    // Registration fee in Wei (10 DeLT)
+    const courseFee2 = ethers.parseEther("20")    // Registration fee in Wei (20 DeLT)
+
+    beforeEach(async function () {
+        [owner, courseCreator1, courseCreator2, student1, student2] = await ethers.getSigners();
+
+        const DeLT = await ethers.getContractFactory("DeLT");
+        delt = await DeLT.deploy();
+
+        const CourseManagement = await ethers.getContractFactory("CourseManagement");
+        courseManagement = await CourseManagement.deploy(delt.target);
+        const courseManagementAddress = courseManagement.target
+
+        // Adding new courses
+        await courseManagement.connect(courseCreator1).addCourse(
+            "Sample Course",
+            courseFee1, // Registration fee in Wei (2 DeLT)
+            "Certificate Metadata"
+        );
+        await courseManagement.connect(courseCreator2).addCourse(
+            "Sample Course",
+            courseFee2, // Registration fee in Wei (2 DeLT)
+            "Certificate Metadata"
+        );
+
+        // Transfer token to increase students balance
+        await delt.transfer(student1, courseFee1)
+        await delt.transfer(student2, courseFee1 + courseFee2)
+
+        // Approve before enrollment
+        await delt.connect(student1).approve(courseManagementAddress, courseFee1);
+        await delt.connect(student2).approve(courseManagementAddress, courseFee1 + courseFee2);
+
+        // Enroll the students in the courses
+        await courseManagement.connect(student1).enrollInCourse(0, courseFee1);
+        await courseManagement.connect(student2).enrollInCourse(0, courseFee1);
+        await courseManagement.connect(student2).enrollInCourse(1, courseFee2);
+    });
+
+    it("Set owner address and count of contributions for added projects", async function () {
+
+        const project1 = await courseManagement.projects(0)
+        const project2 = await courseManagement.projects(1)
+
+        const firstProjectOwner = project1.owner
+        const secondProjectOwner = project2.owner
+
+        const firstProjectContributions = project1.contributionsCount
+        const secondProjectContributions = project2.contributionsCount
+
+        expect(firstProjectOwner).to.equal(courseCreator1.address);
+        expect(secondProjectOwner).to.equal(courseCreator2.address);
+        expect(firstProjectContributions).to.equal(2);
+        expect(secondProjectContributions).to.equal(1);
+    })
+
+    it("Increase matching pool correctly", async function () {
+        const courseManagementAddress = courseManagement.target
+        await delt.approve(courseManagementAddress, amountToPool)
+        const startingMatchingPool = await courseManagement.matchingPool()
+        await courseManagement.increaseMatchingPool(amountToPool)
+        const endingMatchingPool = await courseManagement.matchingPool()
+        expect(startingMatchingPool + amountToPool).to.equal(endingMatchingPool);
+    })
+
+    it("Just projet owner can withdraw matching fund", async function () {
+        const courseManagementAddress = courseManagement.target
+        await delt.approve(courseManagementAddress, amountToPool)
+        await courseManagement.increaseMatchingPool(amountToPool)
+        await courseManagement.toggleWithdrawFunds()
+        await expect(courseManagement
+            .withdrawMatchingFund(0)
+        ).to.be.revertedWith("Only project owner can withdraw")
+    })
+
+})

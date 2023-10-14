@@ -42,7 +42,7 @@ To deploy and test the DeLP smart contracts on your local Ethereum environment:
   yarn hardhat deploy
   ```
 
-Or run following command in another terminal
+  Or run following command in another terminal instance in the same directory:
 
   ```bash
   yarn hardhat node
@@ -54,7 +54,7 @@ Then run:
   yarn hardhat deploy --network localhost
   ```
 
-2. Interact code using hardhat console:
+2. Interact code using hardhat console: (2 * Ctrl+C to exit)
 
   ```bash
   yarn hardhat console

@@ -1,5 +1,5 @@
-# DeLP
-DeLP - Decentralized Learning Platform
+# Decentralized Learning Platform
+(DeLP)
 
 ### Table of Contents
 - [Introduction](#introduction)
